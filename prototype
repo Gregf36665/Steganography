@@ -11,11 +11,14 @@ hidden(:,:,2) = [0,1,2,2,2,3;0,0,0,0,0,0];
 hidden(:,:,3) = [0,1,2,2,2,3;0,0,0,0,0,0];
 
 dim_hidden = size(hidden);
+dim_cover = size(cover);
 
-% Calcualte the height and width of the hidden picture:
+% Calcualte the height and width of the hidden picture and cover:
 
 hidden_height = dim_hidden(1);
 hidden_width = dim_hidden(2);
+cover_height = dim_cover(1);
+cover_width = dim_hidden(2);
 
 % Find shortest binary length
 
@@ -28,7 +31,7 @@ bits_required = hidden_height_bin + hidden_width_bin;
 
 cover_bin=dec2bin(cover);
 dim_cover = size(cover);
-encryption = floor(numel(cover) / 8);
+encryption = cover_height * cover_width;
 
 cover_bit = rem(cover_bin(:,8),2);
 
