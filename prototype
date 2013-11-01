@@ -11,7 +11,8 @@ cover_bin=dec2bin(cover);
 dim_cover = size(cover);
 encryption = floor(numel(cover) / 8);
 
-cover_bit = rem(cover_bin,2);
+cover_bit = rem(cover_bin(:,8),2);
+
 % for i=1:1:encryption,
 % cover_bit(i) = xor(cover_bit(i),hidden(i));
 % end
