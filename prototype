@@ -2,7 +2,9 @@ clear all
 
 %To test I will use a black 2 by 2 picture so that there are unique values but basic
 
-cover = zeros(2,2,3);
+cover(:,:,1) = [255,50;200,100];
+cover (:,:,2) = [100,150;20,200];
+cover (:,:,3) = [30,50;255,0];
 hidden = [001];
 
 cover_bin=dec2bin(cover);
@@ -10,7 +12,6 @@ dim_cover = size(cover);
 encryption = floor(numel(cover) / 8);
 
 cover_bit = rem(cover_bin,2);
-for i=0:1:1:encryption,
-var = xor(cover_bit(i),hidden(i));
-cover_bit = var;
-end
+% for i=1:1:encryption,
+% cover_bit(i) = xor(cover_bit(i),hidden(i));
+% end
