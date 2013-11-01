@@ -59,7 +59,7 @@ This modification is an XOR relationship with a truth table:
 Prototype 2013-11-01
 =====================
 
-For the first prototype I wanted to encode 1 bit in a 1 by 1 picture (3 byte).
+For the first prototype I wanted to encode 1 bit in a 1 by 1 picture (3 byte, no alpha).
 I wanted to attempt to set up a for loop that could deal with multiple bits to encrypt.
 The first step I did was to find the sizes of the different dimensions.
 The word size is reserved and causes problems if it is declared as a variable.
@@ -76,3 +76,12 @@ I made a loop until n >= numelm(cover)/8
   
 After running the prototype I realised I need to reserve the first few bytes for the dimensions of the hidden file.
 I recorded the dimensions of the matrix produced and returned the length and width as different variables
+
+Minimum bits for the dimensions 2013-11-01 
+===========================================
+To figure out the mimimum amount of bits required to remember the dimensions I used:
+
+floor(log2(X)+1);
+
+where X is the dimension.
+The floor command lowers the value to the nearest whole number.
