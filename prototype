@@ -6,9 +6,9 @@ clear all
 cover(:,:,1) = [255,50;200,100];
 cover (:,:,2) = [100,150;20,200];
 cover (:,:,3) = [30,50;255,0];
-hidden(:,:,1) = [0,1,2,2,2,3;0,0,0,0,0,0];
-hidden(:,:,2) = [0,1,2,2,2,3;0,0,0,0,0,0];
-hidden(:,:,3) = [0,1,2,2,2,3;0,0,0,0,0,0];
+hidden(:,:,1) = [255;255];
+hidden(:,:,2) = [255;255];
+hidden(:,:,3) = [0;0];
 
 dim_hidden = size(hidden);
 dim_cover = size(cover);
@@ -29,13 +29,15 @@ hidden_width_bin = floor(log2(hidden_width)+1);
 
 bits_required = hidden_height_bin + hidden_width_bin;
 
-cover_bin=dec2bin(cover);
-dim_cover = size(cover);
+% Convert both the cover and hidden image into binary
+cover_bin = dec2bin(cover);
+hidden_bin = dec2bin(hidden);
+
 encryption = cover_height * cover_width;
 
 cover_bit = rem(cover_bin(:,8),2);
 
 
 for i=1:1:encryption,
-cover_bit(i) = xor(cover_bit(i),hidden(i));
+cover_bit(i) = xor(cover_bit(i),hidden_bin(i));
 end
