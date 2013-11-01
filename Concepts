@@ -61,3 +61,5 @@ Prototype 2013-11-01
 
 For the first prototype I wanted to encode 1 bit in a 1 by 1 picture (3 byte).
 I wanted to attempt to set up a for loop that could deal with multiple bits to encrypt.
+The first step I did was to find the sizes of the different dimensions.
+The word size is reserved and causes problems if it is declared as a variable.
