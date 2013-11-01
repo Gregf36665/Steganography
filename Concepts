@@ -68,4 +68,8 @@ To solve the XOR addition I used:
 
 XOR(A,B)
 
-where A = cover(n)%2 and B = hidden(n)
+where A = cover_bin(8*n)%2 and B = hidden(n)
+
+I made a loop until n >= numelm(cover)/8
+
+  numelm(X) ==> the number of elements in X
