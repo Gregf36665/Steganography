@@ -1,0 +1,8 @@
+clear all 
+
+%To test I will use cover = [255, 100, 000] so that there are unique values but basic
+
+cover = [255, 100, 000];
+
+
+dec2bin(cover)
