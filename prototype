@@ -1,8 +1,8 @@
 clear all 
 
-%To test I will use a black 3 by 3 picture so that there are unique values but basic
+%To test I will use a black 2 by 2 picture so that there is a basic realistic matrix
 
-cover = [255, 100, 000];
+cover = zeros(2,2,3);
 hidden = [001];
 
 cover_bin=dec2bin(cover);
