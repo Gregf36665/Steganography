@@ -1,6 +1,6 @@
 clear all 
 
-%To test I will use a colored 2 by 2 picture so that there are unique values but basic
+% To test I will use a colored 2 by 2 picture so that there are unique values but basic
 % I have selected one black pixel to be hidden 
 
 cover(:,:,1) = [255,50;200,100];
@@ -12,7 +12,7 @@ hidden(:,:,3) = [0];
 
 dim_hidden = size(hidden);
 
-% calcualte the height and width of the hidden picture:
+% Calcualte the height and width of the hidden picture:
 
 hidden_height = dim_hidden(1);
 hidden_width = dim_hidden(2);
@@ -22,7 +22,11 @@ hidden_width = dim_hidden(2);
 hidden_height_bin = dec2bin(hidden_height);
 hidden_width_bin = dec3bin(hidden_width);
 
+% To figure out the number of bits required to encrypt the height and width
 
+height_required = hidden_height_bin(2);
+width_required = hidden_width_bin(2);
+bits_required = height_required + width_required;
 
 cover_bin=dec2bin(cover);
 dim_cover = size(cover);
