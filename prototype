@@ -10,6 +10,13 @@ hidden(:,:,1) = [0];
 hidden(:,:,2) = [1];
 hidden(:,:,3) = [0];
 
+dim_hidden = size(hidden);
+
+% calcualte the height and width of the hidden picture:
+
+hidden_height = dim_hidden(1);
+hidden_width = dim_hidden(2);
+
 cover_bin=dec2bin(cover);
 dim_cover = size(cover);
 encryption = floor(numel(cover) / 8);
