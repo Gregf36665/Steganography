@@ -1,6 +1,6 @@
 clear all 
 
-%To test I will use a black 2 by 2 picture so that there are unique values but basic
+%To test I will use a colored 2 by 2 picture so that there are unique values but basic
 
 cover(:,:,1) = [255,50;200,100];
 cover (:,:,2) = [100,150;20,200];
