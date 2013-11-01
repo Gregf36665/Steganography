@@ -1,11 +1,14 @@
 clear all 
 
 %To test I will use a colored 2 by 2 picture so that there are unique values but basic
+% I have selected one black pixle to be hidden 
 
 cover(:,:,1) = [255,50;200,100];
 cover (:,:,2) = [100,150;20,200];
 cover (:,:,3) = [30,50;255,0];
-hidden = [001];
+hidden(:,:,1) = [0];
+hidden(:,:,2) = [1];
+hidden(:,:,3) = [0];
 
 cover_bin=dec2bin(cover);
 dim_cover = size(cover);
@@ -13,6 +16,6 @@ encryption = floor(numel(cover) / 8);
 
 cover_bit = rem(cover_bin(:,8),2);
 
-% for i=1:1:encryption,
-% cover_bit(i) = xor(cover_bit(i),hidden(i));
-% end
+for i=1:1:encryption,
+cover_bit(i) = xor(cover_bit(i),hidden(i));
+end
