@@ -1,7 +1,7 @@
 clear all 
 
 %To test I will use a colored 2 by 2 picture so that there are unique values but basic
-% I have selected one black pixle to be hidden 
+% I have selected one black pixel to be hidden 
 
 cover(:,:,1) = [255,50;200,100];
 cover (:,:,2) = [100,150;20,200];
@@ -16,6 +16,13 @@ dim_hidden = size(hidden);
 
 hidden_height = dim_hidden(1);
 hidden_width = dim_hidden(2);
+
+% Convert to binary
+
+hidden_height_bin = dec2bin(hidden_height);
+hidden_width_bin = dec3bin(hidden_width);
+
+
 
 cover_bin=dec2bin(cover);
 dim_cover = size(cover);
