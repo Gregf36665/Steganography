@@ -1,14 +1,14 @@
 clear all 
 
 % To test I will use a colored 2 by 2 picture so that there are unique values but basic
-% I have selected one black pixel to be hidden 
+% I have selected two colored pixels to be hidden 
 
 cover(:,:,1) = [255,50;200,100];
 cover (:,:,2) = [100,150;20,200];
 cover (:,:,3) = [30,50;255,0];
-hidden(:,:,1) = [0];
-hidden(:,:,2) = [1];
-hidden(:,:,3) = [0];
+hidden(:,:,1) = [0,1,2,2,2,3;0,0,0,0,0,0];
+hidden(:,:,2) = [0,1,2,2,2,3;0,0,0,0,0,0];
+hidden(:,:,3) = [0,1,2,2,2,3;0,0,0,0,0,0];
 
 dim_hidden = size(hidden);
 
@@ -17,22 +17,21 @@ dim_hidden = size(hidden);
 hidden_height = dim_hidden(1);
 hidden_width = dim_hidden(2);
 
-% Convert to binary
+% Find shortest binary length
 
-hidden_height_bin = dec2bin(hidden_height);
-hidden_width_bin = dec3bin(hidden_width);
+hidden_height_bin = floor(log2(hidden_height)+1);
+hidden_width_bin = floor(log2(hidden_width)+1);
 
 % To figure out the number of bits required to encrypt the height and width
 
-height_required = hidden_height_bin(2);
-width_required = hidden_width_bin(2);
-bits_required = height_required + width_required;
+bits_required = hidden_height_bin + hidden_width_bin;
 
 cover_bin=dec2bin(cover);
 dim_cover = size(cover);
 encryption = floor(numel(cover) / 8);
 
 cover_bit = rem(cover_bin(:,8),2);
+
 
 for i=1:1:encryption,
 cover_bit(i) = xor(cover_bit(i),hidden(i));
