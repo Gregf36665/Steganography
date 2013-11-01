@@ -3,9 +3,10 @@ First ideas
 
 I plan to use an 8-bit picture meaning that the picutre uses 8 bits per color.  
 I would set up the bits in an arbatary form; from high to low:
-RGBA:
-(255,255,255,0)
-(11111111,11111111,11111111,00000000)
+
+  RGBA:
+    (255,255,255,0)
+      (11111111,11111111,11111111,00000000)
 
 In this form 2 = 00000010 rather than 01000000
 
@@ -20,17 +21,40 @@ Formulas
 I need a way to import the picture into matlab and convert the matrix into a binary matrix.
 The first command I will need to use would be:
 
-imread('picture','filetype);
+  imread('picture','filetype);
 
 This will import the data of the picture as a data stream of bytes (0-255).
 
 To turn this into bits I need to use of:
 
-dec2bin(number)
+  dec2bin(number)
 
 The problem with this is that it removes any dimensions and leaves a string of numbers.
 To solve this the command:
 
-size(array)
+  size(array)
 
 is useful as it will give me the three dimensions of the pictures (length, width, bytes per pixle)
+
+Deal with the file to hide
+===========================
+
+To hide the file the first thing I need to do is import it as a data stream.
+After that I change it to a binary stream.
+
+From here I need to take the first three bits and change the last bits in the first three bytes.
+This modification is an XOR relationship with a truth table:
+
+ A | B | Out
+---+---+----
+ 0 | 0 |  0
+---+---+----
+ 0 | 1 |  1
+---+---+----
+ 1 | 0 |  1
+---+---+----
+ 1 | 1 |  0
+
+
+
+
