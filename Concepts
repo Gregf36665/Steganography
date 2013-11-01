@@ -74,6 +74,5 @@ I made a loop until n >= numelm(cover)/8
 
   numelm(X) ==> the number of elements in X
   
-After running the prototype I realised I need to reserve the first few bytes for the dimensions of the hidden file
-
-
+After running the prototype I realised I need to reserve the first few bytes for the dimensions of the hidden file.
+I recorded the dimensions of the matrix produced and returned the length and width as different variables
