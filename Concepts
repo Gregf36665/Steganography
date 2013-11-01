@@ -12,3 +12,25 @@ In this form 2 = 00000010 rather than 01000000
 According to my research a change in one bit for each channel would be unnoticable by a human eye.
 This means that I can hide at most, a picture an eighth of the size of the 'cover' photo.
 This is from the fact that for every byte of the cover picture I can only change one bit.
+
+
+Formulas
+=========
+
+I need a way to import the picture into matlab and convert the matrix into a binary matrix.
+The first command I will need to use would be:
+
+imread('picture','filetype);
+
+This will import the data of the picture as a data stream of bytes (0-255).
+
+To turn this into bits I need to use of:
+
+dec2bin(number)
+
+The problem with this is that it removes any dimensions and leaves a string of numbers.
+To solve this the command:
+
+size(array)
+
+is useful as it will give me the three dimensions of the pictures (length, width, bytes per pixle)
