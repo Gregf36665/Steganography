@@ -18,7 +18,7 @@ dim_cover = size(cover);
 hidden_height = dim_hidden(1);
 hidden_width = dim_hidden(2);
 cover_height = dim_cover(1);
-cover_width = dim_hidden(2);
+cover_width = dim_cover(2);
 
 % Find shortest binary length
 
