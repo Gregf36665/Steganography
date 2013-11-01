@@ -1,10 +1,16 @@
 clear all 
 
-%To test I will use a black 2 by 2 picture so that there is a basic realistic matrix
+%To test I will use a black 2 by 2 picture so that there are unique values but basic
 
 cover = zeros(2,2,3);
 hidden = [001];
 
 cover_bin=dec2bin(cover);
 dim_cover = size(cover);
+encryption = floor(numel(cover) / 8);
 
+cover_bit = rem(cover_bin,2);
+for i=0:1:1:encryption,
+var = xor(cover_bit(i),hidden(i));
+cover_bit = var;
+end
