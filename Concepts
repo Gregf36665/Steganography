@@ -59,4 +59,5 @@ This modification is an XOR relationship with a truth table:
 Prototype 2013-11-01
 =====================
 
-
+For the first prototype I wanted to encode 1 bit in a 1 by 1 picture (3 byte).
+I wanted to attempt to set up a for loop that could deal with multiple bits to encrypt.
