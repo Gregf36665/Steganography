@@ -1,4 +1,14 @@
 First ideas
 =============
 
-I plan to use an 8-bit picture meaning that the picutre uses 8 bits per pixel.  
+I plan to use an 8-bit picture meaning that the picutre uses 8 bits per color.  
+I would set up the bits in an arbatary form; from high to low:
+RGBA:
+(255,255,255,0)
+(11111111,11111111,11111111,00000000)
+
+In this form 2 = 00000010 rather than 01000000
+
+According to my research a change in one bit for each channel would be unnoticable by a human eye.
+This means that I can hide at most, a picture an eighth of the size of the 'cover' photo.
+This is from the fact that for every byte of the cover picture I can only change one bit.
