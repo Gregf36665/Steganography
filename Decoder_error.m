@@ -1,7 +1,7 @@
-function [letter] = decoder_error(fullbitstream)
+function [letter] = decoder_error()
 %This code decrypts the bit stream before the parity bits have been removed
 %   This function can deal with one bit of error
-fullbitstream(1,5:7);
+fullbitstream = input('binary code? ','s'); % this makes the function easier to work with
 
 %make the bitstream intergers (these r values correspond to the paper work)
 
