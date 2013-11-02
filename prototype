@@ -29,7 +29,7 @@ hidden_width_bit = floor(log2(hidden_width)+1);
 
 bits_required = hidden_height_bit + hidden_width_bit;
 
-% Convert both the cover and hidden image and its dimensions into binary
+% Convert both the cover and hidden image into a binary matrix
 
 cover_bin = dec2bin(cover);
 hidden_bin = dec2bin(hidden);
@@ -38,8 +38,22 @@ encryption = cover_height * cover_width; %this is the maximum encryption possibl
 
 cover_bit = rem(cover_bin(:,8),2); %this is the 8th bit
 
-hidden_height_bin = dec2bin(hidden_height_bit);
-hidden_width_bin = dec2bin(hidden_width_bit);
+% Convert the height and width into a matrix of bits
+
+hidden_height_bin = zeros(hidden_height_bit,1);
+hidden_width_bin = zeros(hidden_height_bit,1);
+
+x = hidden_height % These variables are to perform the loop to make a binary string
+p = 0
+while x ~= 0,
+  p = p + 1
+  if rem(x,2) == 0,
+    x = x / 2
+    hidden_height_bin(p) = 1
+  else
+    x = x - 1
+    hidden_height_bin(hidden_height_bit) = 1
+  end
 
 % Encrypt the dimensions in one byte
 
