@@ -43,17 +43,41 @@ cover_bit = rem(cover_bin(:,8),2); %this is the 8th bit
 hidden_height_bin = zeros(hidden_height_bit,1);
 hidden_width_bin = zeros(hidden_height_bit,1);
 
-x = hidden_height % These variables are to perform the loop to make a binary string
-p = 0
+% Height:
+
+x = hidden_height; % These variables are to perform the loop to make a binary string
+p = 0;
 while x ~= 0,
-  p = p + 1
-  if rem(x,2) == 0,
-    x = x / 2
-    hidden_height_bin(p) = 1
+  p = p + 1;
+  if rem(x,2) ~= 0,
+    x = x - 1;
+    hidden_height_bin(hidden_height_bit) = 1;
   else
-    x = x - 1
-    hidden_height_bin(hidden_height_bit) = 1
+      hidden_height_bin(p) = 1;
+      x = x / 2;
+    if x == 1,       % This is to prevent the issue when x = 2: x/2 = 1 but the code still works if x = 1
+        break;
+    end
   end
+end
+
+% Width:
+
+x = hidden_width; % These variables are to perform the loop to make a binary string
+p = 0;
+while x ~= 0,
+  p = p + 1;
+  if rem(x,2) ~= 0,
+    x = x - 1;
+    hidden_width_bin(hidden_width_bit) = 1;
+  else
+      hidden_width_bin(p) = 1;
+      x = x / 2;
+    if x == 1,       % This is to prevent the issue when x = 2: x/2 = 1 but the code still works if x = 1
+        break;
+    end
+  end
+end
 
 % Encrypt the dimensions in one byte
 
@@ -69,5 +93,3 @@ end
 for i=17:1:encryption,
 cover_bit(i) = xor(cover_bit(i),hidden_bin(i));
 end
-
-
