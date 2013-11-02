@@ -85,3 +85,8 @@ floor(log2(X)+1);
 
 where X is the dimension.
 The floor command lowers the value to the nearest whole number.
+
+Decryption
+==========
+
+To be able to decrypt the picture without the original there needs to be some type of code
