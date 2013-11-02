@@ -1,11 +1,11 @@
 clear all 
 
-% To test I will use a colored 5 by 5 picture so that there are unique values but basic
+% To test I will use a colored 6 by 6 picture so that there are unique values but basic
 % I have selected two colored pixels to be hidden 
 
-cover(:,:,1) = [255,50,100,100,100;200,100,100,20,255];
-cover (:,:,2) = [255,50,100,100,100;200,100,100,20,255];
-cover (:,:,3) = [255,50,100,100,100;200,100,100,20,255];
+cover(:,:,1) = [255,50,100,100,100,100;200,100,100,20,255,100];
+cover (:,:,2) = [255,50,100,100,100,100;200,100,100,20,255,100];
+cover (:,:,3) = [255,50,100,100,100,100;200,100,100,20,255,100];
 hidden(:,:,1) = [255;255];
 hidden(:,:,2) = [255;255];
 hidden(:,:,3) = [0;0];
@@ -21,13 +21,13 @@ cover_height = dim_cover(1);
 cover_width = dim_cover(2);
 
 % Find shortest binary length
-
-hidden_height_bit = floor(log2(hidden_height)+1);
-hidden_width_bit = floor(log2(hidden_width)+1);
+% Unnessecery
+% hidden_height_bit = floor(log2(hidden_height)+1);
+% hidden_width_bit = floor(log2(hidden_width)+1);
 
 % To figure out the number of bits required to encrypt the height and width
 
-bits_required = hidden_height_bit + hidden_width_bit;
+% bits_required = hidden_height_bit + hidden_width_bit;
 
 % Convert both the cover and hidden image into a binary matrix
 
@@ -38,20 +38,21 @@ encryption = cover_height * cover_width; %this is the maximum encryption possibl
 
 cover_bit = rem(cover_bin(:,8),2); %this is the 8th bit
 
-% Convert the height and width into a matrix of bits
+% Convert the height and width into a matrix of bits, use 16 to have 2 bytes and a maximum
+% resolution of 65536 by 65536 pow(2,16)
 
-hidden_height_bin = zeros(hidden_height_bit,1);
-hidden_width_bin = zeros(hidden_height_bit,1);
+hidden_height_bin = zeros(16,1);
+hidden_width_bin = zeros(16,1);
 
 % Height:
 
 x = hidden_height; % These variables are to perform the loop to make a binary string
-p = 0;
+p = 16;
 while x ~= 0,
-  p = p + 1;
+  p = p - 1;
   if rem(x,2) ~= 0,
     x = x - 1;
-    hidden_height_bin(hidden_height_bit) = 1;
+    hidden_height_bin(16) = 1;
   else
       hidden_height_bin(p) = 1;
       x = x / 2;
@@ -64,12 +65,12 @@ end
 % Width:
 
 x = hidden_width; % These variables are to perform the loop to make a binary string
-p = 0;
+p = 15;
 while x ~= 0,
-  p = p + 1;
+  p = p - 1;
   if rem(x,2) ~= 0,
     x = x - 1;
-    hidden_width_bin(hidden_width_bit) = 1;
+    hidden_width_bin(16) = 1;
   else
       hidden_width_bin(p) = 1;
       x = x / 2;
@@ -81,15 +82,15 @@ end
 
 % Encrypt the dimensions in one byte
 
-for i=1:1:hidden_height_bit,
+for i=1:1:16,
 cover_bit(i) = xor(cover_bit(i),hidden_height_bin(i)); 
 end
 
-for i=8:1:bits_required,
-cover_bit(i) = xor(cover_bit(i),hidden_width_bin(i-hidden_height_bit));
+for i=17:1:32,
+cover_bit(i) = xor(cover_bit(i),hidden_width_bin(i-16));
 end
 
 % change the bits that are 1 but not the ones that are 0
-for i=17:1:encryption,
+for i=33:1:encryption,
 cover_bit(i) = xor(cover_bit(i),hidden_bin(i));
 end
