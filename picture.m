@@ -39,6 +39,7 @@ hidden_bin_b = dec2bin(hidden_b);
 
 if (hidden_height * hidden_width >= cover_height * cover_width),
     disp('Hidden image too large');
+    break
 end
 
 encryption = hidden_height * hidden_width; %this is the required encryption
@@ -95,7 +96,7 @@ code_g = cover_bin_g(:,8);
 code_b = cover_bin_b(:,8);
 
 % Encrypt the dimensions in four bytes with red as height green as width
-% and then from 17 all are data
+% and then from bit 17 all are data
 
 for i=1:1:16,
 code_r(i) = num2str(hidden_height_bin(i)); 
@@ -105,8 +106,8 @@ for i=1:1:16,
 code_g(i) = num2str(hidden_width_bin(i));
 end
 
-% change the bits that are 1 but not the ones that are 0
-% start at 17 with  red in red green in green and blue in blue
+% Change the bits that are exclusivly 1 but not the ones that are 0 or both 1
+% Start at 17 with red in red green in green and blue in blue
  
  for i=17:1:encryption,
  code_r(i) = (xor(str2double(code_r(i)),str2double(hidden_bin_r(i-16))));
