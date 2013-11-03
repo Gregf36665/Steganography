@@ -4,7 +4,7 @@ clear all
 % I have selected two colored pixels to be hidden 
 
 cover = imread(input('Cover: ','s'));
-hidden = imread(input('File to hide: ','s'));
+hidden = imread(input('Picture to hide: ','s'));
 
 dim_hidden = size(hidden);
 dim_cover = size(cover);
@@ -34,6 +34,8 @@ cover_bin_b = dec2bin(cover_b);
 hidden_bin_r = dec2bin(hidden_r);
 hidden_bin_g = dec2bin(hidden_g);
 hidden_bin_b = dec2bin(hidden_b);
+
+% Check if the image is ok to hide.
 
 if (hidden_height * hidden_width >= cover_height * cover_width),
     disp('Hidden image too large');
