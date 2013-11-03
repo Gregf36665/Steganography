@@ -1,7 +1,7 @@
 clear all 
 
-% To test I will use a low res image as an import
-% I have selected two colored pixels to be hidden 
+% This code is cabable of dealing with any images
+
 
 cover = imread(input('Cover: ','s'));
 hidden = imread(input('File to hide: ','s'));
