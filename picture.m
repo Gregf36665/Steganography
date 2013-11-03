@@ -48,8 +48,8 @@ cover_bit_b = rem(cover_bin_b(:,8),2);
 % Convert the height and width into a matrix of bits, use 16 to have 2 bytes and a maximum
 % resolution of 32768 by 32768 pow(2,15)
 
-hidden_height_bin = zeros(16,1);
-hidden_width_bin = zeros(16,1);
+hidden_height_bin = zeros(1,16);
+hidden_width_bin = zeros(1,16);
 
 % Height:
 
@@ -93,37 +93,54 @@ code_g = cover_bin_g(:,8);
 code_b = cover_bin_b(:,8);
 
 % Encrypt the dimensions in four bytes with red as height green as width
-% and blue as data
+% and then from 17 all are data
 
 for i=1:1:16,
-code_r(i) = hidden_height_bin(i); 
+code_r(i) = num2str(hidden_height_bin(i)); 
 end
 
 for i=1:1:16,
-code_g(i) = hidden_width_bin(i);
+code_g(i) = num2str(hidden_width_bin(i));
 end
 
 % change the bits that are 1 but not the ones that are 0
 % start at 17 with  red in red green in green and blue in blue
+ 
+ for i=17:1:encryption,
+ code_r(i) = (xor(str2double(code_r(i)),str2double(hidden_bin_r(i-16))));
+ end
 
 for i=17:1:encryption,
-code_r(i) = num2str(xor(str2double(code_r(i)),str2double(hidden_bin_r(i-16))));
+code_g(i) = (xor(str2double(code_g(i)),str2double(hidden_bin_g(i-16))));
 end
 
 for i=17:1:encryption,
-code_g(i) = num2str(xor(str2double(code_g(i)),str2double(hidden_bin_g(i-16))));
+code_b(i) = (xor(str2double(code_b(i)),str2double(hidden_bin_b(i-16))));
 end
 
-for i=17:1:encryption,
-code_b(i) = num2str(xor(str2double(code_b(i)),str2double(hidden_bin_b(i-16))));
-end
-
-%make the code_color into dimensions that match the original image (res for
-%resolution)
+% make the code_color into dimensions that match the original image (res for
+% resolution)
 
 res_code_r = zeros(cover_height,cover_width);
 res_code_g = zeros(cover_height,cover_width);
 res_code_b = zeros(cover_height,cover_width);
 
+for i=1:1:numel(code_r),
+    res_code_r(i) = char(str2double(code_r(i)));
+    res_code_g(i) = char(str2double(code_g(i)));
+    res_code_b(i) = char(str2double(code_b(i)));
+end
 
+% perform the datashift
+out_r = cover_r + uint8(res_code_r);
+out_g = cover_g + uint8(res_code_g);
+out_b = cover_b + uint8(res_code_b);
 
+% compile all of the data together
+output = zeros(cover_height,cover_width,3);
+
+output(:,:,1) = out_r; 
+output(:,:,2) = out_g;
+output(:,:,3) = out_b;
+
+output = uint8(output);
