@@ -79,6 +79,7 @@ I recorded the dimensions of the matrix produced and returned the length and wid
 
 Minimum bits for the dimensions 2013-11-01 
 ===========================================
+
 To figure out the mimimum amount of bits required to remember the dimensions I used:
 
 floor(log2(X)+1);
@@ -95,3 +96,9 @@ Test 2013-11-03
 ================
 
 I modifyed the code to take pictures in rather than predefined matrixes and I managed to sucsessfully see a picture output for the height and width data.
+
+Future plans
+============
+
+It is possible that could set the bit rather than flip the bit to be able to decrypt the image.
+Extracting hte image would be significantly easier to do.
