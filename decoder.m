@@ -10,7 +10,7 @@ dim_coded = size(coded);
 
 coded_height = dim_coded(1);
 coded_width = dim_coded(2);
-
+coded_size = coded_height * coded_width;
 % Find the red green and blue channels of the image:
 
 coded_r = coded(:,:,1); 
@@ -45,3 +45,13 @@ end
 width_hidden = bin2dec(width_hidden_bin);
 
 hidden = zeros(height_hidden,width_hidden,3);
+
+% find the values of r
+% bits required:
+
+bits = width_hidden * height_hidden * 8;
+
+for i=17:1:bits,
+    continue
+end
+
