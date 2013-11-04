@@ -35,7 +35,7 @@ hidden_bin_r = dec2bin(hidden_r,8);
 hidden_bin_g = dec2bin(hidden_g,8);
 hidden_bin_b = dec2bin(hidden_b,8);
 
-if (hidden_height * hidden_width >= cover_height * cover_width),
+if (hidden_height * hidden_width >= (cover_height * cover_width-16)/8),
     disp('Hidden image too large');
     break
 end
@@ -53,61 +53,61 @@ hidden_height_bin = dec2bin(hidden_height,16);
 hidden_width_bin = dec2bin(hidden_width,16);
 
 % Set up the code stream
-code_r = cover_bin_r(:,8);
-code_g = cover_bin_g(:,8);
-code_b = cover_bin_b(:,8);
+code_r = zeros(cover_height,cover_width);
+code_g = zeros(cover_height,cover_width);
+code_b = zeros(cover_height,cover_width);
 
 % Encrypt the dimensions in four bytes with red as height green as width
 % and then from 17 all are data
 
 for i=1:1:16,
-code_r(i) = num2str(hidden_height_bin(i)); 
+code_r(i) = str2double(hidden_height_bin(i)); 
 end
 
 for i=1:1:16,
-code_g(i) = num2str(hidden_width_bin(i));
+code_g(i) = str2double(hidden_width_bin(i));
 end
 
 % change the bits that are 1 but not the ones that are 0
 % start at 17 with  red in red green in green and blue in blue
  
- for i=17:1:encryption,
- code_r(i) = (hidden_bin_r(i-16));
+ for i=17:1:(encryption*8)+16,
+ code_r(i) = str2double(hidden_bin_r(i-16));
  end
 
-for i=17:1:encryption,
-code_g(i) = (hidden_bin_g(i-16));
+for i=17:1:(encryption*8)+16,
+code_g(i) = str2double(hidden_bin_g(i-16));
 end
 
-for i=17:1:encryption,
-code_b(i) = (hidden_bin_b(i-16));
+for i=17:1:(encryption*8)+16,
+code_b(i) = str2double(hidden_bin_b(i-16));
 end
 
 % make the code_color into dimensions that match the original image (res for
 % resolution)
 
-res_code_r = zeros(cover_height,cover_width);
-res_code_g = zeros(cover_height,cover_width);
-res_code_b = zeros(cover_height,cover_width);
-
-for i=1:1:numel(code_r),
-    res_code_r(i) = char(str2double(code_r(i)));
-    res_code_g(i) = char(str2double(code_g(i)));
-    res_code_b(i) = char(str2double(code_b(i)));
-end
+% res_code_r = zeros(cover_height,cover_width);
+% res_code_g = zeros(cover_height,cover_width);
+% res_code_b = zeros(cover_height,cover_width);
+% 
+% for i=1:1:numel(code_r),
+%     res_code_r(i) = char(str2double(code_r(i)));
+%     res_code_g(i) = char(str2double(code_g(i)));
+%     res_code_b(i) = char(str2double(code_b(i)));
+% end
 
 % perform the datashift 
 %for red
-for i=1:1:cover_height*cover_width,
+for i=17:1:cover_height*cover_width,
 if rem(cover_r(i),2) == 0,
-    if res_code_r(i) == 0,
+    if code_r(i) == 0,
         continue
     else
         cover_r(i) = cover_r(i) + 1;    
     end
 else
     if rem(cover_r(i),2) == 1,
-        if res_code_r(i) == 1,
+        if code_r(i) == 1,
             continue
         else
             if cover_r(i) == 255,
@@ -123,14 +123,14 @@ end
 %for green
 for i=1:1:cover_height*cover_width,
 if rem(cover_g(i),2) == 0,
-    if res_code_g(i) == 0,
+    if code_g(i) == 0,
         continue
     else
         cover_g(i) = cover_g(i) + 1;    
     end
 else
     if rem(cover_g(i),2) == 1,
-        if res_code_g(i) == 1,
+        if code_g(i) == 1,
             continue
         else
             if cover_g(i) == 255,
@@ -146,14 +146,14 @@ end
 %for blue
 for i=1:1:cover_height*cover_width,
 if rem(cover_b(i),2) == 0,
-    if res_code_b(i) == 0,
+    if code_b(i) == 0,
         continue
     else
         cover_b(i) = cover_b(i) + 1;    
     end
 else
     if rem(cover_b(i),2) == 1,
-        if res_code_b(i) == 1,
+        if code_b(i) == 1,
             continue
         else
             if cover_b(i) == 255,
@@ -167,9 +167,9 @@ end
 end
 
 
-out_r = cover_r + rem(cover_r + uint8(res_code_r),2);
-out_g = cover_g + rem(cover_g + uint8(res_code_g),2);
-out_b = cover_b + rem(cover_b + uint8(res_code_b),2);
+out_r = cover_r + rem(cover_r + uint8(code_r),2);
+out_g = cover_g + rem(cover_g + uint8(code_g),2);
+out_b = cover_b + rem(cover_b + uint8(code_b),2);
 
 % compile all of the data together
 output = zeros(cover_height,cover_width,3);
