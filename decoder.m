@@ -46,17 +46,28 @@ clear i;
 
 width_hidden = bin2dec(width_hidden_bin);
 
-hidden = zeros(height_hidden,width_hidden,3);
+hidden_r = zeros(height_hidden,width_hidden);
+hidden_g = zeros(height_hidden,width_hidden);
+hidden_b = zeros(height_hidden,width_hidden);
 
 % find the values of r
 % bits required:
 
 bits = width_hidden * height_hidden * 8;
 
-hidden_r = hidden(:,:,1);
-hidden_g = hidden(:,:,2);
-hidden_b = hidden(:,:,3);
 
-hidden_bit_r = rem(coded_r,2);
-hidden_bit_g = rem(coded_r,2);
-hidden_bit_b = rem(coded_r,2);
+for i=2:1:bits/8,
+    hidden_r(i) = bin2dec(num2str(str2double(coded_bit_r(8*i+1:8*i+8))));
+end
+
+for i=1:1:bits/8,
+    hidden_g(i) = bin2dec(num2str(str2double(coded_bit_g(8*i+9:8*i+16))));
+end
+
+for i=1:1:bits/8,
+    hidden_b(i) = bin2dec(num2str(str2double(coded_bit_b(8*i+9:8*i+16))));
+end
+
+hidden(:,:,1) = hidden_r;
+hidden(:,:,2) = hidden_g;
+hidden(:,:,3) = hidden_b;
