@@ -42,6 +42,8 @@ for i=1:1:16,
     width_hidden_bin(i) = num2str(coded_bit_g(i));
 end
 
+clear i;
+
 width_hidden = bin2dec(width_hidden_bin);
 
 hidden = zeros(height_hidden,width_hidden,3);
@@ -51,7 +53,10 @@ hidden = zeros(height_hidden,width_hidden,3);
 
 bits = width_hidden * height_hidden * 8;
 
-for i=17:1:bits,
-    continue
-end
+hidden_r = hidden(:,:,1);
+hidden_g = hidden(:,:,2);
+hidden_b = hidden(:,:,3);
 
+hidden_bit_r = rem(coded_r,2);
+hidden_bit_g = rem(coded_r,2);
+hidden_bit_b = rem(coded_r,2);
