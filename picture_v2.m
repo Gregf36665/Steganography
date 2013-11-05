@@ -36,7 +36,7 @@ hidden_bin_r = dec2bin(hidden_r,8);
 hidden_bin_g = dec2bin(hidden_g,8);
 hidden_bin_b = dec2bin(hidden_b,8);
 
-if (hidden_height * hidden_width >= (cover_height * cover_width-16)/8),
+if (hidden_height * hidden_width * 8 >= (cover_height * cover_width-16)/8),
     disp('Hidden image too large');
     break
 end
