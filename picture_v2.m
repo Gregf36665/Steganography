@@ -1,6 +1,7 @@
 clear all 
 
-% This code is cabable of dealing with any images
+% This code is cabable of dealing with any images of a reasonable size
+% if the image is too large the program will get stuck in a loop
 
 
 cover = imread(input('Cover: ','s'));
@@ -70,10 +71,21 @@ end
 
 % change the bits that are 1 but not the ones that are 0
 % start at 17 with  red in red green in green and blue in blue
- 
- for i=17:1:(encryption*8)+16,
- code_r(i) = str2double(hidden_bin_r(i-16));
- end
+% this code is encrypting incorrectly as hidden_bin_color is in the wrong 
+% direction:
+
+% to fix this I rotate the matrix 270 degrees CCW and then reflect the
+% matrix vertically
+
+hidden_bin_r = flipdim(rot90(hidden_bin_r,3),2);
+hidden_bin_g = flipdim(rot90(hidden_bin_g,3),2);
+hidden_bin_b = flipdim(rot90(hidden_bin_b,3),2);
+
+% start the encryption
+
+for i=17:1:(encryption*8)+16,
+code_r(i) = str2double(hidden_bin_r(i-16));
+end
 
 for i=17:1:(encryption*8)+16,
 code_g(i) = str2double(hidden_bin_g(i-16));
