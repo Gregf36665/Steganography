@@ -119,6 +119,15 @@ To extract the sound I need the samples and the sample rate:
 This imports the sample as y in an N x 2 matrix (L/R channel) and fs as the samples per second.
 I plan to use the red channel for left and the green channel for right and the blue channel for sample rate.
 
-One issue is that the value for y is between -1 and 1 but I want it between 0 and 256.
+One issue is that the value for y is between -1 and 1 but I want it between 0 and 255.
 I need to figure out a way to encode the data in such a way that the negative numbers are <128 and positive is >=128.
+
+Bits per sample 2013-11-10
+===========================
+
+After examinine the file I realised that there were actually 16 bits per sample not 8 so I actually needed a number between:
+0 and 65535 (2^16-1)
+
+The first plan should be to build an encoded and decoder for audio to bits and back.
+Maybe save it as a function and then call it in the larger project.
 
