@@ -1,10 +1,17 @@
 clear all 
 
 % This code is cabable of dealing with audio
-
+% The plan is to encode the first 24 red channels cover(1:24) with the sample rate then after
+% that add the data in
 
 cover = imread(input('Cover: ','s'));
-[hidden, sample_rate] = audioread(input('File to hide: ','s'));
+sound = input('File to hide: ','s');
+
+hiddenaudio = audioinfo(sound);
+hidden = audioread(sound);
+sample_rate = hiddenaudio.SampleRate;
+bps = hiddenaudio.BitsPerSample;
+duration = hiddenaudio.Duration;
 
 dim_hidden = size(hidden);
 dim_cover = size(cover);
@@ -13,7 +20,7 @@ dim_cover = size(cover);
 
 hidden_width = dim_hidden(2);
 
-if hidden_width == 2,
+if hiddenaudio.NumChannels == 2,
     stereo = true;
 else
     stereo = false;
@@ -21,23 +28,39 @@ end
 
 % Calcualte the height and width of the picture and the duration of the song (in samples):
 
-hidden_height = dim_hidden(1);
+hidden_height = hiddenaudio.TotalSamples;
 cover_height = dim_cover(1);
 cover_width = dim_cover(2);
 
 encryption = hidden_height * hidden_width; %this is the required encryption
 
+%% 
+%{
+Error control:
+First test is to examine the size of the cover image.  Next is to examine
+the duration of the file.  The code is set up so that the maximum duration
+of sound is (2^16)/1000 = 65.536 seconds, just over one miniute.
+%}
+
 % Test the size of the cover
-if (cover_height*cover_width<24)
-    disp('cover too small (min 24px)');
+if (cover_height*cover_width<8)
+    disp('cover too small (min 8px)');
+    break
+end
+
+% Test the duration of the audio clip
+
+if duration > 65.536,
+    disp('Audio clip too long');
     break
 end
 
 % Test the size of the audio clip
-if (hidden_height * 8) >= ((cover_height * cover_width)/8),
+% This error test is no longer valid
+if (hidden_height * 16) >= ((cover_height * cover_width)/8),
     disp('Hidden audio too large');
     if strcmp(input('Compress audio? (Y/N) ','s'),'Y'),
-        sample_rate = sample_rate/ceil(hidden_height*64/(cover_height*cover_width));
+        sample_rate = sample_rate/ceil(hidden_height*128/(cover_height*cover_width));
         msg = ['Compressed to ', num2str(sample_rate) , ' samples per second'];
         disp(msg);
         clear msg
@@ -46,39 +69,45 @@ if (hidden_height * 8) >= ((cover_height * cover_width)/8),
     end
 end
 
-% Find the red green and blue channels of the cover image image:
 
-cover_red = cover(:,:,1); 
-cover_green = cover(:,:,2);
-cover_blue = cover(:,:,3);
+%% 
+
+% Convert the cover into bytes
+
+cover_bin = dec2bin(cover,8);
 
 % Find the left and right if stereo
-hidden_left = hidden(:,1);
 if stereo,
+    hidden_left = hidden(:,1);
     hidden_right = hidden(:,2);
+    if strcmp(input('Convert to mono? (Y/N)','s'),'Y'),
+        hidden_left(:,1) = (hidden_left + hidden_right)/2;
+        stereo = false;
+    end
 else
-    hidden_right = zeros(hidden_height,1);
+    hidden_left(:,1) = hidden_left;
 end
-hidden_sample = sample_rate;
+
+
 % Convert  the cover image into a binary matrix as each
 % seperate color
 
-cover_bin_red = dec2bin(cover_red,8);
-cover_bin_green = dec2bin(cover_green,8);
-cover_bin_blue = dec2bin(cover_blue,8);
+% turn all of the audio into uint16:
 
-% turn all of the audio into uint8:
+hidden_left = 2^bps * hidden_left;
+if stereo,
+    hidden_right = 2^bps * hidden_right;
+else
+    hidden_right = [];
+end
 
-hidden_left = 128 * hidden_left;
-hidden_right = 128 * hidden_right;
-
-% if the number is negative then it will be >= 128
+% if the number is negative then it will be >= 2^bps
 for i=1:1:hidden_height,
     if hidden_left(i) < 0,
-        hidden_left(i) = -hidden_left(i) + 128;
+        hidden_left(i) = -hidden_left(i) + 2^bps;
     end
-    if hidden_right(i) < 0,
-        hidden_right(i) = -hidden_right(i) + 128;
+    if and(hidden_right(i) < 0,stereo),
+        hidden_right(i) = -hidden_right(i) + 2^bps;
     end
 end
 
@@ -86,134 +115,72 @@ hidden_left = uint8(hidden_left);
 hidden_right = uint8(hidden_right);
 
 
-% Prepare to convert uint8 to binary:
-hidden_bin_left = zeros(hidden_height,stereo+1);
-hidden_bin_right = zeros(hidden_height,stereo+1);
-hidden_bin_sample = dec2bin(hidden_sample,24); % this is at 24 bits as max sample ~2^24
+% Prepare to convert uint16 to binary:
 
+hidden_bin_left = dec2bin(hidden_left,bps);
+hidden_bin_right = dec2bin(hidden_right,bps);
+hidden_bin_sample = dec2bin(sample_rate,24); % this is at 24 bits as max sample ~2^24
 
-cover_bit_red = cover_bin_red(:,8); %this is the 8th bit
-cover_bit_green = cover_bin_green(:,8);
-cover_bit_blue = cover_bin_blue(:,8);
+cover_bit = zeros(size(hidden) + [24,0]); % set the length to the amount of samples + 24 for fs
 
+% rotate the matrix 270 degrees CCW and then reflect the
+% matrix vertically
 
-% Set up the code stream
-code_left = zeros(cover_height,cover_width);
-code_right = zeros(cover_height,cover_width);
-code_sample = zeros(cover_height,cover_width);
-
-
+hidden_bin_left = flipdim(rot90(hidden_bin_left,3),2);
+hidden_bin_right = flipdim(rot90(hidden_bin_right,3),2);
+hidden_bin_sample = flipdim(rot90(hidden_bin_sample,3),2);
 
 % change the bits that are 1 but not the ones that are 0
 % start at `1 with left in red right in green and sample frequency in blue
 
 % start the encryption
 
-for i=17:1:(encryption*8)+16,
-code_left(i) = str2double(hidden_bin_left(i-16));
-end
+disp('encoding image');
 
-for i=17:1:(encryption*8)+16,
-code_right(i) = str2double(hidden_bin_right(i-16));
-end
-
-for i=17:1:(encryption*8)+16,
-code_sample(i) = str2double(hidden_bin_sample(i-16));
-end
-
-% make the code_color into dimensions that match the original image (res for
-% resolution)
-
-% res_code_r = zeros(cover_height,cover_width);
-% res_code_g = zeros(cover_height,cover_width);
-% res_code_b = zeros(cover_height,cover_width);
-% 
-% for i=1:1:numel(code_r),
-%     res_code_r(i) = char(str2double(code_r(i)));
-%     res_code_g(i) = char(str2double(code_g(i)));
-%     res_code_b(i) = char(str2double(code_b(i)));
-% end
-
+%sample rate
 % perform the datashift 
-%for red/left
-for i=17:1:cover_height*cover_width,
-if rem(cover_r(i),2) == 0,
-    if code_left(i) == 0,
-        continue
-    else
-        cover_r(i) = cover_r(i) + 1;    
-    end
-else
-    if rem(cover_r(i),2) == 1,
-        if code_left(i) == 1,
-            continue
-        else
-            if cover_r(i) == 255,
-                cover_r(i) = 254;
-            else
-                cover_r(i) = cover_r(i) + 1;
-            end
-        end
-    end
-end
+%for everything
+% Where should it start (bit)?
+
+data = 1;
+
+% First the bits per sample in a byte:
+bps_bin = dec2bin(bps,8);
+
+for i=data:1:data+7
+    cover_bit(i)= str2double(bps_bin(i+1-data));
 end
 
-%for green/right
-for i=1:1:cover_height*cover_width,
-if rem(cover_g(i),2) == 0,
-    if code_left(i) == 0,
-        continue
-    else
-        cover_g(i) = cover_g(i) + 1;    
-    end
-else
-    if rem(cover_g(i),2) == 1,
-        if code_left(i) == 1,
-            continue
-        else
-            if cover_g(i) == 255,
-                cover_g(i) = 254;
-            else
-                cover_g(i) = cover_g(i) + 1;
-            end
-        end
-    end
-end
+for i=data+8:1:data+31,
+cover_bit(i) = rem(str2double(hidden_bin_sample(i+1-data-8)),2);
 end
 
-%for blue
-for i=1:1:cover_height*cover_width,
-if rem(cover_b(i),2) == 0,
-    if code_sample(i) == 0,
-        continue
-    else
-        cover_b(i) = cover_b(i) + 1;    
-    end
-else
-    if rem(cover_b(i),2) == 1,
-        if code_sample(i) == 1,
-            continue
-        else
-            if cover_b(i) == 255,
-                cover_b(i) = 254;
-            else
-                cover_b(i) = cover_b(i) + 1;
-            end
-        end
-    end
+%Duration:
+
+duration_ms = round(duration*10000);
+duration_ms_bin = dec2bin(duration_ms,16);
+for i=data+32:1:data+47,
+    cover_bit(i) = str2double(duration_ms_bin(i+1-data-32)); 
 end
+%data
+
+for i=data+48:1:hidden_height+data+47,
+cover_bit(i) = rem(str2double(hidden_bin_left(i+1-data-48)),2);
+end
+if stereo
+    for i=data+48:1:hidden_height+data+47,
+    cover_bit(i+hidden_height) = rem(str2double(hidden_bin_right(i+1-data-48)),2);
+    end
 end
 
 
-out_r = cover_r + rem(cover_r + uint8(code_right),2);
-out_g = cover_g + rem(cover_g + uint8(code_g),2);
-out_b = cover_b + rem(cover_b + uint8(code_sample),2);
+cover_out = cover;
+
+
+for i=1:1:numel(cover_bit),
+cover_out(i+data-1) = cover_out(i+data-1) + cover_bit(i);
+end
 
 % compile all of the data together
-output = zeros(cover_height,cover_width,3);
 
-output(:,:,1) = rem(out_r,256); 
-output(:,:,2) = rem(out_g,256);
-output(:,:,3) = rem(out_b,256);
-
-output = uint8(output);
+output = cover_out;
