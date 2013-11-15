@@ -1,11 +1,9 @@
 clear all 
 
-% To test I will use a colored 6 by 6 picture so that there are unique values but basic
+% To test I will use a low res image as an import
 % I have selected two colored pixels to be hidden 
 
-cover(:,:,1) = [255,50,100,100,100,100;200,100,100,20,255,100];
-cover (:,:,2) = [255,50,100,100,100,100;200,100,100,20,255,100];
-cover (:,:,3) = [255,50,100,100,100,100;200,100,100,20,255,100];
+cover = imread(input('File name: ','s'));
 hidden(:,:,1) = [255;255];
 hidden(:,:,2) = [255;255];
 hidden(:,:,3) = [0;0];

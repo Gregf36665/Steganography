@@ -79,6 +79,7 @@ I recorded the dimensions of the matrix produced and returned the length and wid
 
 Minimum bits for the dimensions 2013-11-01 
 ===========================================
+
 To figure out the mimimum amount of bits required to remember the dimensions I used:
 
 floor(log2(X)+1);
@@ -89,4 +90,70 @@ The floor command lowers the value to the nearest whole number.
 Decryption
 ==========
 
-To be able to decrypt the picture without the original there needs to be some type of code
+To be able to decrypt the picture without the original there needs to be some type of convention for the code.  I dedicated the first 2 bytes to the height and the next two to the width and then after that I would use the rest for the code.  The first 4 bytes would be set to either 1 or 0 to say the height and width but after that the bits would be exclusivly added.
+
+Test 2013-11-03
+================
+
+I modifyed the code to take pictures in rather than predefined matrixes and I managed to sucsessfully see a picture output for the height and width data.
+
+Future plans
+============
+
+It is possible that could set the bit rather than flip the bit to be able to decrypt the image.
+Extracting the image would be significantly easier to do.
+
+Final project 2013-11-04
+=========================
+
+I have managed to create a program that can hide a picture inside another image and sucsessfully extract the image out again
+Now I need to work with audio
+
+Audio 2013-11-06
+================
+
+To extract the sound I need the samples and the sample rate:
+
+[y , fs] = wavread('file.wav");
+
+This imports the sample as y in an N x 2 matrix (L/R channel) and fs as the samples per second.
+I plan to use the red channel for left and the green channel for right and the blue channel for sample rate.
+
+One issue is that the value for y is between -1 and 1 but I want it between 0 and 255.
+I need to figure out a way to encode the data in such a way that the negative numbers are <128 and positive is >=128.
+
+Bits per sample 2013-11-10
+===========================
+
+After examinine the file I realised that there were actually 16 bits per sample not 8 so I actually needed a number between:
+0 and 65535 (2^16-1)
+
+The first plan should be to build an encoded and decoder for audio to bits and back.
+Maybe save it as a function and then call it in the larger project.
+
+Audio 2013-11-15
+=================
+
+I learnt a new command called:
+
+audioread('sound.wav','native');
+
+which returns the sound in interger format so I just need to add 2^(bps-1) to it to convert it to binary.
+One major issure is that I am not sure how the picture and audio Steganography will work together.
+
+
+Class 2013-11-15
+=================
+
+Reshape the audio matrix from a vector into a matrix using:
+
+reshape(value,dimension,dimension);
+
+I am now going to try and make a program that hides the audio after the picture.
+
+After Class 2013-11-15
+=======================
+
+I have come to the conclusion that the best idea would be to turn the picture and audio into binary.
+From there I can hide the entire string in to the picture and extract the picture then the audio.
+I have moved to building many basic programs rather than one large program
