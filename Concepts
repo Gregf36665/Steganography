@@ -140,3 +140,14 @@ audioread('sound.wav','native');
 
 which returns the sound in interger format so I just need to add 2^(bps-1) to it to convert it to binary.
 One major issure is that I am not sure how the picture and audio Steganography will work together.
+
+
+Class 2013-11-15
+=================
+
+Reshape the audio matrix from a vector into a matrix using:
+
+reshape(value,dimension,dimension);
+
+I am now going to try and make a program that hides the audio after the picture.
+
