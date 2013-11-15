@@ -151,3 +151,9 @@ reshape(value,dimension,dimension);
 
 I am now going to try and make a program that hides the audio after the picture.
 
+After Class 2013-11-15
+=======================
+
+I have come to the conclusion that the best idea would be to turn the picture and audio into binary.
+From there I can hide the entire string in to the picture and extract the picture then the audio.
+I have moved to building many basic programs rather than one large program
