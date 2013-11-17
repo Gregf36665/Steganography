@@ -1,30 +1,43 @@
+% Set up:
 clear all
 noise=audioread('cookiemonster.wav');
 plot(noise)
 noise=noise(:,1);
 sound(noise,44100)
-pic=imread('test_out_1.png');
+cover=imread('test_out_1.png');
 figure(2)
-image(pic)
+image(cover)
 hidden=imread('cameraman.png');
 figure(3)
 image(hidden)
-pic=double(pic);
-ae=pic;
-%ae(1:256,1:256)=a(1:256,1:256)+double(b)/100;
-ae(1:256,1:256,1)=pic(1:256,1:256,1)+double(hidden)/100;
+cover=double(cover);
+edit=cover;
+%%
+% Hide the picture
+edit(1:256,1:256,:)=cover(1:256,1:256,:)+double(hidden)/100;
 figure(4)
-image(ae/256)
-%xa=x(1:28662,1);
-xa=x(1:32256,1);
-%ae(257:537,257:256+102)=(a(257:537,257:256+102))+reshape(xa,281,102)*20;
-ae(257:384,1:252,1)=(pic(257:384,1:252,1))+reshape(xa,128,252)*20;
+image(edit/256)
+%%
+% Hide the sound
+noise=noise(1:70592,1);
+
+edit(257:320,1:1103,1)=(cover(257:320,1:1103,1))+reshape(noise,64,1103)*20+1;
 figure(5)
-image(ae/256)
+
+%%
+% Display the cover image with the hidden image and audio
+edit_uint = uint8(edit);
+image(edit_uint)
+
+%%
+% Decode the image
 figure(6)
-image((ae(1:256,1:256)-pic(1:256,1:256)))
-%xr=reshape(ae(257:537,257:256+102)-a(257:537,257:256+102),281*102,1);
-xr=reshape(ae(257:384,1:252,1)-pic(257:384,1:252,1),128*252,1);
+hidden_out = (edit(1:256,1:256,:)-(cover(1:256,1:256,:)))*100 ;
+image(uint8(hidden_out))
+
+%%
+% Decode the audio
+xr=reshape(edit(257:320,1:1103,1)-cover(257:320,1:1103,1),70592,1);
 figure(7)
 plot(xr)
 sound(xr/20,44100)
