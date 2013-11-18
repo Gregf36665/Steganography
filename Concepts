@@ -11,9 +11,9 @@ I would set up the bits in an arbatary form; from high to low:
 In this form 2 = 00000010 rather than 01000000
 
 According to my research a change in one bit for each channel would be unnoticable by a human eye.
-This means that I can hide at most, a picture an eighth of the size of the 'cover' photo.
-This is from the fact that for every byte of the cover picture I can only change one bit.
-
+This means that I can hide at least, a picture an eighth of the size of the 'cover' photo.
+This is from the fact that for every byte of the cover picture I can change at least one bit.
+My program worked with only one bit.
 
 Formulas
 =========
@@ -70,9 +70,9 @@ To solve the XOR addition I used:
 
 where A = cover_bin(8*n)%2 and B = hidden(n)
 
-I made a loop until n >= numelm(cover)/8
+I made a loop until n >= numel(cover)/8
 
-  numelm(X) ==> the number of elements in X
+  numel(X) ==> the number of elements in X
   
 After running the prototype I realised I need to reserve the first few bytes for the dimensions of the hidden file.
 I recorded the dimensions of the matrix produced and returned the length and width as different variables
@@ -90,7 +90,9 @@ The floor command lowers the value to the nearest whole number.
 Decryption
 ==========
 
-To be able to decrypt the picture without the original there needs to be some type of convention for the code.  I dedicated the first 2 bytes to the height and the next two to the width and then after that I would use the rest for the code.  The first 4 bytes would be set to either 1 or 0 to say the height and width but after that the bits would be exclusivly added.
+To be able to decrypt the picture without the original there needs to be some type of convention for the code.
+I dedicated the first 2 bytes to the height and the next two to the width and then after that I would use the rest for the code.
+The first 4 bytes would be set to either 1 or 0 to say the height and width but after that the bits would be exclusivly added.
 
 Test 2013-11-03
 ================
@@ -167,4 +169,3 @@ This made it significantly easier as only a couple of lines of code were require
 The downside to this method is that this method is more easily detectable.
 Also it would require the transmission of both the original and edited image.
 My code for hiding a picture could hide any RGB image inside another RGB and decode on a seperate machine
-
