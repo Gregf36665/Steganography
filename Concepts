@@ -134,11 +134,11 @@ Maybe save it as a function and then call it in the larger project.
 Audio 2013-11-15
 =================
 
-I learnt a new command called:
+I learnt a new command variation called:
 
 audioread('sound.wav','native');
 
-which returns the sound in interger format so I just need to add 2^(bps-1) to it to convert it to binary.
+which returns the sound in interger format so I just need to add 2^(bps-1) to it to convert it to unsigned binary.
 One major issure is that I am not sure how the picture and audio Steganography will work together.
 
 
@@ -157,3 +157,14 @@ After Class 2013-11-15
 I have come to the conclusion that the best idea would be to turn the picture and audio into binary.
 From there I can hide the entire string in to the picture and extract the picture then the audio.
 I have moved to building many basic programs rather than one large program
+
+Final result 2013-11-17
+========================
+
+I gave up on the audio as it was becoming too complex for the project.
+The assignment said that you were allowed to use the original image to extract the hidden data.
+This made it significantly easier as only a couple of lines of code were required.
+The downside to this method is that this method is more easily detectable.
+Also it would require the transmission of both the original and edited image.
+My code for hiding a picture could hide any RGB image inside another RGB and decode on a seperate machine
+
