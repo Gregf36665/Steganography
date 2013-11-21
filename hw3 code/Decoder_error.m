@@ -1,3 +1,5 @@
+clear all
+
 function [letter] = decoder_error()
 %This code decrypts the bit stream before the parity bits have been removed
 %   This function can deal with one bit of error
