@@ -1,0 +1,428 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>picture_v2</title><meta name="generator" content="MATLAB 8.2"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2013-11-21"><meta name="DC.source" content="picture_v2.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, tt, code { font-size:12px; }
+pre { margin:0px 0px 20px; }
+pre.error { color:red; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#3">Error checking</a></li><li><a href="#4">Find information about the images</a></li><li><a href="#5">Select area to change</a></li><li><a href="#6">Encrypt the dimensions</a></li><li><a href="#7">Start the encryption</a></li><li><a href="#8">Perform the datashift</a></li><li><a href="#11">Edit the cover</a></li></ul></div><pre class="codeinput"><span class="comment">% This code is capable of dealing with any images</span>
+
+clear <span class="string">all</span>
+cover = imread(input(<span class="string">'Cover: '</span>,<span class="string">'s'</span>));
+hidden = imread(input(<span class="string">'File to hide: '</span>,<span class="string">'s'</span>));
+
+dim_hidden = size(hidden);
+dim_cover = size(cover);
+</pre><p>Calcualte the height and width of the hidden picture and cover:</p><pre class="codeinput">hidden_height = dim_hidden(1);
+hidden_width = dim_hidden(2);
+cover_height = dim_cover(1);
+cover_width = dim_cover(2);
+</pre><h2>Error checking<a name="3"></a></h2><p>This runs a basic check to ensure that the image can actually be hidden</p><pre class="codeinput"><span class="keyword">if</span> (hidden_height * hidden_width * 8 &gt;= ((cover_height * cover_width)-16)/8),
+    disp(<span class="string">'Hidden image too large'</span>);
+    <span class="keyword">break</span>
+<span class="keyword">end</span>
+disp(<span class="string">'Image valid'</span>);
+</pre><h2>Find information about the images<a name="4"></a></h2><p>Find the red green and blue channels of each image:</p><pre class="codeinput">cover_r = cover(:,:,1);
+cover_g = cover(:,:,2);
+cover_b = cover(:,:,3);
+hidden_r = hidden(:,:,1);
+hidden_g = hidden(:,:,2);
+hidden_b = hidden(:,:,3);
+
+<span class="comment">% Convert both the cover and hidden image into a binary matrix as each</span>
+<span class="comment">% seperate color</span>
+
+cover_bin_r = dec2bin(cover_r,8);
+cover_bin_g = dec2bin(cover_g,8);
+cover_bin_b = dec2bin(cover_b,8);
+hidden_bin_r = dec2bin(hidden_r,8);
+hidden_bin_g = dec2bin(hidden_g,8);
+hidden_bin_b = dec2bin(hidden_b,8);
+disp(<span class="string">'Converted to binary'</span>);
+</pre><h2>Select area to change<a name="5"></a></h2><pre class="codeinput">encryption = hidden_height * hidden_width; <span class="comment">%this is the required encryption</span>
+
+cover_bit_r = cover_bin_r(:,8); <span class="comment">%this is the 8th bit</span>
+cover_bit_g = cover_bin_g(:,8);
+cover_bit_b = cover_bin_b(:,8);
+
+<span class="comment">% Convert the height and width into a matrix of bits, use 16 to have 2 bytes and a maximum</span>
+<span class="comment">% resolution of 32768 by 32768 pow(2,15)</span>
+
+hidden_height_bin = dec2bin(hidden_height,16);
+hidden_width_bin = dec2bin(hidden_width,16);
+
+<span class="comment">% Set up the code stream</span>
+code_r = zeros(cover_height,cover_width);
+code_g = zeros(cover_height,cover_width);
+code_b = zeros(cover_height,cover_width);
+</pre><h2>Encrypt the dimensions<a name="6"></a></h2><p>four bytes with red as height green as width and then from 17 all are data for all channels</p><pre class="codeinput"><span class="keyword">for</span> i=1:1:16,
+code_r(i) = str2double(hidden_height_bin(i));
+<span class="keyword">end</span>
+
+<span class="keyword">for</span> i=1:1:16,
+code_g(i) = str2double(hidden_width_bin(i));
+<span class="keyword">end</span>
+disp(<span class="string">'Dimensions encrypted'</span>);
+<span class="comment">% change the bits that are 1 but not the ones that are 0</span>
+<span class="comment">% start at 17 with  red in red green in green and blue in blue</span>
+<span class="comment">% this code is encrypting incorrectly as hidden_bin_color is in the wrong</span>
+<span class="comment">% direction:</span>
+
+<span class="comment">% to fix this I rotate the matrix 270 degrees CCW first and then reflect</span>
+<span class="comment">% the matrix vertically</span>
+
+hidden_bin_r = flipdim(rot90(hidden_bin_r,3),2);
+hidden_bin_g = flipdim(rot90(hidden_bin_g,3),2);
+hidden_bin_b = flipdim(rot90(hidden_bin_b,3),2);
+</pre><h2>Start the encryption<a name="7"></a></h2><pre class="codeinput"><span class="keyword">for</span> i=17:1:(encryption*8)+16,
+code_r(i) = str2double(hidden_bin_r(i-16));
+<span class="keyword">end</span>
+disp(<span class="string">'Red encrypted'</span>);
+
+<span class="keyword">for</span> i=17:1:(encryption*8)+16,
+code_g(i) = str2double(hidden_bin_g(i-16));
+<span class="keyword">end</span>
+disp(<span class="string">'Green encrypted'</span>);
+
+<span class="keyword">for</span> i=17:1:(encryption*8)+16,
+code_b(i) = str2double(hidden_bin_b(i-16));
+<span class="keyword">end</span>
+disp(<span class="string">'Blue encrypted'</span>);
+</pre><h2>Perform the datashift<a name="8"></a></h2><p>for red</p><pre class="codeinput">disp(<span class="string">'Encoding red'</span>);
+<span class="keyword">for</span> i=17:1:encryption*8 + 16,
+<span class="keyword">if</span> rem(cover_r(i),2) == 0,
+    <span class="keyword">if</span> code_r(i) == 0,
+        <span class="keyword">continue</span>
+    <span class="keyword">else</span>
+        cover_r(i) = cover_r(i) + 1;
+    <span class="keyword">end</span>
+<span class="keyword">else</span>
+    <span class="keyword">if</span> rem(cover_r(i),2) == 1,
+        <span class="keyword">if</span> code_r(i) == 1,
+            <span class="keyword">continue</span>
+        <span class="keyword">else</span>
+            <span class="keyword">if</span> cover_r(i) == 255,
+                cover_r(i) = 254;
+            <span class="keyword">else</span>
+                cover_r(i) = cover_r(i) + 1;
+            <span class="keyword">end</span>
+        <span class="keyword">end</span>
+    <span class="keyword">end</span>
+<span class="keyword">end</span>
+<span class="keyword">end</span>
+</pre><p>for green</p><pre class="codeinput">disp(<span class="string">'Encoding green'</span>);
+<span class="keyword">for</span> i=1:1:encryption*8 + 16,
+<span class="keyword">if</span> rem(cover_g(i),2) == 0,
+    <span class="keyword">if</span> code_g(i) == 0,
+        <span class="keyword">continue</span>
+    <span class="keyword">else</span>
+        cover_g(i) = cover_g(i) + 1;
+    <span class="keyword">end</span>
+<span class="keyword">else</span>
+    <span class="keyword">if</span> rem(cover_g(i),2) == 1,
+        <span class="keyword">if</span> code_g(i) == 1,
+            <span class="keyword">continue</span>
+        <span class="keyword">else</span>
+            <span class="keyword">if</span> cover_g(i) == 255,
+                cover_g(i) = 254;
+            <span class="keyword">else</span>
+                cover_g(i) = cover_g(i) + 1;
+            <span class="keyword">end</span>
+        <span class="keyword">end</span>
+    <span class="keyword">end</span>
+<span class="keyword">end</span>
+<span class="keyword">end</span>
+</pre><p>for blue</p><pre class="codeinput">disp(<span class="string">'Encoding blue'</span>);
+<span class="keyword">for</span> i=1:1:encryption*8 + 16,
+<span class="keyword">if</span> rem(cover_b(i),2) == 0,
+    <span class="keyword">if</span> code_b(i) == 0,
+        <span class="keyword">continue</span>
+    <span class="keyword">else</span>
+        cover_b(i) = cover_b(i) + 1;
+    <span class="keyword">end</span>
+<span class="keyword">else</span>
+    <span class="keyword">if</span> rem(cover_b(i),2) == 1,
+        <span class="keyword">if</span> code_b(i) == 1,
+            <span class="keyword">continue</span>
+        <span class="keyword">else</span>
+            <span class="keyword">if</span> cover_b(i) == 255,
+                cover_b(i) = 254;
+            <span class="keyword">else</span>
+                cover_b(i) = cover_b(i) + 1;
+            <span class="keyword">end</span>
+        <span class="keyword">end</span>
+    <span class="keyword">end</span>
+<span class="keyword">end</span>
+<span class="keyword">end</span>
+</pre><h2>Edit the cover<a name="11"></a></h2><p>this will make the cover even if there is a 0 and odd if there is a one</p><pre class="codeinput">out_r = cover_r + rem(cover_r + uint8(code_r),2);
+out_g = cover_g + rem(cover_g + uint8(code_g),2);
+out_b = cover_b + rem(cover_b + uint8(code_b),2);
+
+<span class="comment">% compile all of the data together</span>
+output = zeros(cover_height,cover_width,3);
+
+<span class="comment">% the rem(x,256) is to ensure that all values can be uint8</span>
+output(:,:,1) = rem(out_r,256);
+output(:,:,2) = rem(out_g,256);
+output(:,:,3) = rem(out_b,256);
+
+output = uint8(output);
+</pre><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2013b</a><br></p></div><!--
+##### SOURCE BEGIN #####
+% This code is capable of dealing with any images
+
+clear all 
+cover = imread(input('Cover: ','s'));
+hidden = imread(input('File to hide: ','s'));
+
+dim_hidden = size(hidden);
+dim_cover = size(cover);
+%%
+% Calcualte the height and width of the hidden picture and cover:
+
+hidden_height = dim_hidden(1);
+hidden_width = dim_hidden(2);
+cover_height = dim_cover(1);
+cover_width = dim_cover(2);
+
+%% Error checking
+% This runs a basic check to ensure that the image can actually be hidden
+
+if (hidden_height * hidden_width * 8 >= ((cover_height * cover_width)-16)/8),
+    disp('Hidden image too large');
+    break
+end
+disp('Image valid');
+%% Find information about the images
+% Find the red green and blue channels of each image:
+
+cover_r = cover(:,:,1); 
+cover_g = cover(:,:,2);
+cover_b = cover(:,:,3);
+hidden_r = hidden(:,:,1);
+hidden_g = hidden(:,:,2);
+hidden_b = hidden(:,:,3);
+
+% Convert both the cover and hidden image into a binary matrix as each
+% seperate color
+
+cover_bin_r = dec2bin(cover_r,8);
+cover_bin_g = dec2bin(cover_g,8);
+cover_bin_b = dec2bin(cover_b,8);
+hidden_bin_r = dec2bin(hidden_r,8);
+hidden_bin_g = dec2bin(hidden_g,8);
+hidden_bin_b = dec2bin(hidden_b,8);
+disp('Converted to binary');
+%% Select area to change
+
+encryption = hidden_height * hidden_width; %this is the required encryption
+
+cover_bit_r = cover_bin_r(:,8); %this is the 8th bit
+cover_bit_g = cover_bin_g(:,8);
+cover_bit_b = cover_bin_b(:,8);
+
+% Convert the height and width into a matrix of bits, use 16 to have 2 bytes and a maximum
+% resolution of 32768 by 32768 pow(2,15)
+
+hidden_height_bin = dec2bin(hidden_height,16);
+hidden_width_bin = dec2bin(hidden_width,16);
+
+% Set up the code stream
+code_r = zeros(cover_height,cover_width);
+code_g = zeros(cover_height,cover_width);
+code_b = zeros(cover_height,cover_width);
+
+
+%% Encrypt the dimensions 
+% four bytes with red as height green as width 
+% and then from 17 all are data for all channels
+
+for i=1:1:16,
+code_r(i) = str2double(hidden_height_bin(i)); 
+end
+
+for i=1:1:16,
+code_g(i) = str2double(hidden_width_bin(i));
+end
+disp('Dimensions encrypted');
+% change the bits that are 1 but not the ones that are 0
+% start at 17 with  red in red green in green and blue in blue
+% this code is encrypting incorrectly as hidden_bin_color is in the wrong 
+% direction:
+
+% to fix this I rotate the matrix 270 degrees CCW first and then reflect
+% the matrix vertically
+
+hidden_bin_r = flipdim(rot90(hidden_bin_r,3),2);
+hidden_bin_g = flipdim(rot90(hidden_bin_g,3),2);
+hidden_bin_b = flipdim(rot90(hidden_bin_b,3),2);
+
+%% Start the encryption
+
+for i=17:1:(encryption*8)+16,
+code_r(i) = str2double(hidden_bin_r(i-16));
+end
+disp('Red encrypted');
+
+for i=17:1:(encryption*8)+16,
+code_g(i) = str2double(hidden_bin_g(i-16));
+end
+disp('Green encrypted');
+
+for i=17:1:(encryption*8)+16,
+code_b(i) = str2double(hidden_bin_b(i-16));
+end
+disp('Blue encrypted');
+
+%% Perform the datashift 
+% for red
+disp('Encoding red');
+for i=17:1:encryption*8 + 16,
+if rem(cover_r(i),2) == 0,
+    if code_r(i) == 0,
+        continue
+    else
+        cover_r(i) = cover_r(i) + 1;    
+    end
+else
+    if rem(cover_r(i),2) == 1,
+        if code_r(i) == 1,
+            continue
+        else
+            if cover_r(i) == 255,
+                cover_r(i) = 254;
+            else
+                cover_r(i) = cover_r(i) + 1;
+            end
+        end
+    end
+end
+end
+
+%%
+% for green
+disp('Encoding green');
+for i=1:1:encryption*8 + 16,
+if rem(cover_g(i),2) == 0,
+    if code_g(i) == 0,
+        continue
+    else
+        cover_g(i) = cover_g(i) + 1;    
+    end
+else
+    if rem(cover_g(i),2) == 1,
+        if code_g(i) == 1,
+            continue
+        else
+            if cover_g(i) == 255,
+                cover_g(i) = 254;
+            else
+                cover_g(i) = cover_g(i) + 1;
+            end
+        end
+    end
+end
+end
+
+%%
+% for blue
+disp('Encoding blue');
+for i=1:1:encryption*8 + 16,
+if rem(cover_b(i),2) == 0,
+    if code_b(i) == 0,
+        continue
+    else
+        cover_b(i) = cover_b(i) + 1;    
+    end
+else
+    if rem(cover_b(i),2) == 1,
+        if code_b(i) == 1,
+            continue
+        else
+            if cover_b(i) == 255,
+                cover_b(i) = 254;
+            else
+                cover_b(i) = cover_b(i) + 1;
+            end
+        end
+    end
+end
+end
+%% Edit the cover
+% this will make the cover even if there is a 0 and odd if there is
+% a one
+out_r = cover_r + rem(cover_r + uint8(code_r),2);
+out_g = cover_g + rem(cover_g + uint8(code_g),2);
+out_b = cover_b + rem(cover_b + uint8(code_b),2);
+
+% compile all of the data together
+output = zeros(cover_height,cover_width,3);
+
+% the rem(x,256) is to ensure that all values can be uint8
+output(:,:,1) = rem(out_r,256); 
+output(:,:,2) = rem(out_g,256);
+output(:,:,3) = rem(out_b,256);
+
+output = uint8(output);
+##### SOURCE END #####
+--></body></html>
