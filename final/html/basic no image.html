@@ -6,7 +6,7 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>basic</title><meta name="generator" content="MATLAB 8.2"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2013-12-02"><meta name="DC.source" content="basic.m"><style type="text/css">
+      --><title>basic</title><meta name="generator" content="MATLAB 8.2"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2013-11-21"><meta name="DC.source" content="basic.m"><style type="text/css">
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
@@ -65,7 +65,7 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 
 
 
-  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#1">Set up</a></li><li><a href="#2">Hide the picture</a></li><li><a href="#3">Hide the sound</a></li><li><a href="#4">Show hidden</a></li><li><a href="#5">Decode pic</a></li><li><a href="#6">Decode sound</a></li></ul></div><h2>Set up<a name="1"></a></h2><p>This reads all of the data in and makes it into the right format</p><pre class="codeinput">clear <span class="string">all</span>
+  </style></head><body><div class="content"><h2>Set up<a name="1"></a></h2><p>This reads all of the data in and makes it into the right format</p><pre class="codeinput">clear <span class="string">all</span>
 noise=audioread(<span class="string">'cookiemonster.wav'</span>);
 figure(<span class="string">'name'</span>,<span class="string">'Audio'</span>);
 plot(noise)
@@ -81,11 +81,11 @@ figure(3)
 image(hidden)
 cover=double(cover);
 edit=cover;
-</pre><img vspace="5" hspace="5" src="basic_01.png" alt=""> <img vspace="5" hspace="5" src="basic_02.png" alt=""> <img vspace="5" hspace="5" src="basic_03.png" alt=""> <h2>Hide the picture<a name="2"></a></h2><p>this is basic addition on the first 256x256px</p><pre class="codeinput">edit(1:256,1:256,:)=cover(1:256,1:256,:)+double(hidden)/100;
+</pre><h2>Hide the picture<a name="2"></a></h2><p>this is basic addition on the first 256x256px</p><pre class="codeinput">edit(1:256,1:256,:)=cover(1:256,1:256,:)+double(hidden)/100;
 figure(<span class="string">'name'</span>,<span class="string">'Cover with image hidden'</span>);
 figure(4)
 image(edit/256)
-</pre><img vspace="5" hspace="5" src="basic_04.png" alt=""> <h2>Hide the sound<a name="3"></a></h2><p>This is basic addition on the next 64x1103px</p><pre class="codeinput">noise=noise(1:70592,1); <span class="comment">% Ensure the dimensions are correct</span>
+</pre><h2>Hide the sound<a name="3"></a></h2><p>This is basic addition on the next 64x1103px</p><pre class="codeinput">noise=noise(1:70592,1); <span class="comment">% Ensure the dimensions are correct</span>
 
 <span class="comment">% Reshape to fit into the image</span>
 edit(257:320,1:1103,1)=(cover(257:320,1:1103,1))+reshape(noise,64,1103)*20+1;
@@ -93,16 +93,16 @@ edit(257:320,1:1103,1)=(cover(257:320,1:1103,1))+reshape(noise,64,1103)*20+1;
 figure(5)
 edit_uint = uint8(edit);
 image(edit_uint)
-</pre><img vspace="5" hspace="5" src="basic_05.png" alt=""> <h2>Decode pic<a name="5"></a></h2><p>Extract the hidden image</p><pre class="codeinput">figure(<span class="string">'name'</span>,<span class="string">'Extracted hidden image'</span>);
+</pre><h2>Decode pic<a name="5"></a></h2><p>Extract the hidden image</p><pre class="codeinput">figure(<span class="string">'name'</span>,<span class="string">'Extracted hidden image'</span>);
 figure(6)
 hidden_out = (edit(1:256,1:256,:)-(cover(1:256,1:256,:)))*100 ;
 image(uint8(hidden_out))
-</pre><img vspace="5" hspace="5" src="basic_06.png" alt=""> <h2>Decode sound<a name="6"></a></h2><p>Extract the hidden audio</p><pre class="codeinput">figure(<span class="string">'name'</span>,<span class="string">'Extracted audio'</span>);
+</pre><h2>Decode sound<a name="6"></a></h2><p>Extract the hidden audio</p><pre class="codeinput">figure(<span class="string">'name'</span>,<span class="string">'Extracted audio'</span>);
 audio_out=reshape(edit(257:320,1:1103,1)-cover(257:320,1:1103,1),70592,1);
 figure(7)
 plot(audio_out)
 sound(audio_out/20,44100)
-</pre><img vspace="5" hspace="5" src="basic_07.png" alt=""> <p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2013b</a><br></p></div><!--
+</pre><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2013b</a><br></p></div><!--
 ##### SOURCE BEGIN #####
 %% Set up
 % This reads all of the data in and makes it into the right format
@@ -122,14 +122,12 @@ figure(3)
 image(hidden)
 cover=double(cover);
 edit=cover;
-
 %% Hide the picture
 % this is basic addition on the first 256x256px
 edit(1:256,1:256,:)=cover(1:256,1:256,:)+double(hidden)/100;
 figure('name','Cover with image hidden');
 figure(4)
 image(edit/256)
-
 %% Hide the sound
 % This is basic addition on the next 64x1103px
 noise=noise(1:70592,1); % Ensure the dimensions are correct

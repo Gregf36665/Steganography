@@ -16,12 +16,14 @@ figure(3)
 image(hidden)
 cover=double(cover);
 edit=cover;
+
 %% Hide the picture
 % this is basic addition on the first 256x256px
 edit(1:256,1:256,:)=cover(1:256,1:256,:)+double(hidden)/100;
 figure('name','Cover with image hidden');
 figure(4)
 image(edit/256)
+
 %% Hide the sound
 % This is basic addition on the next 64x1103px
 noise=noise(1:70592,1); % Ensure the dimensions are correct
